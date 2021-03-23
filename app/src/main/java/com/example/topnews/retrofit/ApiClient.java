@@ -1,4 +1,4 @@
-package com.example.topnews;
+package com.example.topnews.retrofit;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

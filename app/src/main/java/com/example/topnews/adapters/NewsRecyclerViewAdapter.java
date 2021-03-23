@@ -1,4 +1,4 @@
-package com.example.topnews;
+package com.example.topnews.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,21 +7,22 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.topnews.Model.Articles;
+import com.example.topnews.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
+
+public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerViewAdapter.ViewHolder> {
 
    private Context context;
    private List<Articles> articles;
 
-    public Adapter(List<Articles> articles) {
+    public NewsRecyclerViewAdapter(List<Articles> articles) {
         this.articles = articles;
     }
 

@@ -1,24 +1,23 @@
-package com.example.topnews;
+package com.example.topnews.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.widget.TextView;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.example.topnews.Model.Articles;
 import com.example.topnews.Model.Headlines;
-import com.example.topnews.Model.Source;
+import com.example.topnews.R;
+import com.example.topnews.adapters.NewsRecyclerViewAdapter;
+import com.example.topnews.fragments.DrawerFragment;
+import com.example.topnews.fragments.NewsFragment;
+import com.example.topnews.retrofit.ApiClient;
+import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
@@ -26,17 +25,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    Toolbar toolbar;
+    private Toolbar toolbar;
     private RecyclerView recyclerView;
     final String API_KEY = "14bfe05834a444b79739ac49197ae489";
-    private Adapter adapter;
+    private NewsRecyclerViewAdapter mNewsRecyclerViewAdapter;
+    private NavigationView mNavigationView;
+    private DrawerLayout mDrawerLayout;
+    private FrameLayout mFrameLayout;
     private List<Articles> articles = new ArrayList<>();
+    private DrawerFragment mDrawerFragment;
+    private NewsFragment mNewsFragment;
     //Context context;
     private static final String Key = "key";
 
@@ -45,19 +55,29 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mDrawerLayout = findViewById(R.id.drawerLayout);
+        toolbar = findViewById(R.id.toolb);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
-        toolbar =findViewById(R.id.toolb);
-        //setSupportActionBar(toolbar);
+        mNavigationView = findViewById(R.id.drawer_container);
+        mFrameLayout = findViewById(R.id.fl_container);
 
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new Adapter(articles);
-        recyclerView.setAdapter(adapter);
-        String country = getCountry();
-        retrievejson(country,API_KEY);
-
+        getSupportFragmentManager().beginTransaction().add(R.id.fl_container,new NewsFragment()).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.drawer_container,new DrawerFragment()).commit();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Log.e("TAG", "onOptionsItemSelected: " );
+            if (mDrawerLayout.isDrawerOpen(mNavigationView)){
+                mDrawerLayout.closeDrawer(Gravity.START);
+            } else {
+                mDrawerLayout.openDrawer(Gravity.START);
+            }
+            return true;
+    }
 
     public void retrievejson(String country, String apiKey){
 
@@ -69,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body().getArticles() != null) {
                     articles.clear();
                     articles = response.body().getArticles();
-                    adapter.notifyDataSetChanged();
+                    mNewsRecyclerViewAdapter.notifyDataSetChanged();
                      Gson gson = new Gson();
                      String json = gson.toJson(articles);
 
@@ -91,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 Type type = new TypeToken<ArrayList<Articles>>() {}.getType();
                 art = gson.fromJson(json, type);
                 articles.addAll(art);
-                adapter.notifyDataSetChanged();
+                mNewsRecyclerViewAdapter.notifyDataSetChanged();
                 Toast.makeText(MainActivity.this,t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });

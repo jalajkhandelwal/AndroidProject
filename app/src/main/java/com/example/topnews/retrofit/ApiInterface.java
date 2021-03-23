@@ -1,4 +1,4 @@
-package com.example.topnews;
+package com.example.topnews.retrofit;
 
 import com.example.topnews.Model.Headlines;
 
