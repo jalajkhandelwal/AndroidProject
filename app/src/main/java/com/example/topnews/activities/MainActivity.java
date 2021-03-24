@@ -38,8 +38,8 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
-    private RecyclerView recyclerView;
-    final String API_KEY = "14bfe05834a444b79739ac49197ae489";
+    //private RecyclerView recyclerView;
+    //final String API_KEY = "14bfe05834a444b79739ac49197ae489";
     private NewsRecyclerViewAdapter mNewsRecyclerViewAdapter;
     private NavigationView mNavigationView;
     private DrawerLayout mDrawerLayout;
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerFragment mDrawerFragment;
     private NewsFragment mNewsFragment;
     //Context context;
-    private static final String Key = "key";
+    //private static final String Key = "key";
 
 
     @Override
@@ -77,49 +77,5 @@ public class MainActivity extends AppCompatActivity {
                 mDrawerLayout.openDrawer(Gravity.START);
             }
             return true;
-    }
-
-    public void retrievejson(String country, String apiKey){
-
-        Call<Headlines> call = ApiClient.getInstance().getApi().getHeadlines(country,apiKey);
-        call.enqueue(new Callback<Headlines>() {
-
-            @Override
-            public void onResponse(Call<Headlines> call, Response<Headlines> response) {
-                if (response.isSuccessful() && response.body().getArticles() != null) {
-                    articles.clear();
-                    articles = response.body().getArticles();
-                    mNewsRecyclerViewAdapter.notifyDataSetChanged();
-                     Gson gson = new Gson();
-                     String json = gson.toJson(articles);
-
-                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                     SharedPreferences.Editor editor = sp.edit();
-                     editor.putString(Key,json);
-                     editor.apply();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Headlines> call, Throwable t) {
-
-                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                String json = sp.getString(Key,"");
-                articles.clear();
-                List<Articles> art = new ArrayList<>();
-                Gson gson = new Gson();
-                Type type = new TypeToken<ArrayList<Articles>>() {}.getType();
-                art = gson.fromJson(json, type);
-                articles.addAll(art);
-                mNewsRecyclerViewAdapter.notifyDataSetChanged();
-                Toast.makeText(MainActivity.this,t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    public String getCountry(){
-        Locale locale = Locale.getDefault();
-        String country = locale.getCountry();
-        return country.toLowerCase();
     }
 }
