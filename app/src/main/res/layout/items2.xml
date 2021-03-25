@@ -3,14 +3,28 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/catg"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="TextView"
+        android:singleLine="true"
+        android:textSize="20sp"
+        android:paddingTop="10dp"
+        android:paddingStart="16dp"
+        android:paddingBottom="10dp"
+        android:paddingEnd="10dp"
+        android:textColor="@color/black"
         tools:layout_editor_absoluteX="27dp"
         tools:layout_editor_absoluteY="20dp" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/black"
+
+        />
 </LinearLayout>

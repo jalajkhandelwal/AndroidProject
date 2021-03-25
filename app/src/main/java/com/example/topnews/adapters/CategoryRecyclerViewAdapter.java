@@ -6,23 +6,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.topnews.Model.Articles;
-import com.example.topnews.Model.Source;
 import com.example.topnews.Model.Sources;
 import com.example.topnews.R;
-import com.squareup.picasso.Picasso;
+import com.example.topnews.interfces.RecyclerClickListener;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRecyclerViewAdapter.ViewHolder> {
     private Context context;
     private List<Sources> sources;
+    private RecyclerClickListener mRecyclerClickListener;
 
-    public CategoryRecyclerViewAdapter(List<Sources> sources) {
+    public CategoryRecyclerViewAdapter(List<Sources> sources, RecyclerClickListener mListener) {
         this.sources = sources;
+        this.mRecyclerClickListener = mListener;
     }
 
     @NonNull
@@ -36,8 +36,13 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if(sources !=null && sources.size()>0) {
-            Sources a = sources.get(position);
-            holder.categoryView.setText(a.getCategory());
+            holder.categoryView.setText(sources.get(position).getName());
+            holder.categoryView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mRecyclerClickListener.onRecyclerClickListener(sources.get(position).getId());
+                }
+            });
         }
     }
 

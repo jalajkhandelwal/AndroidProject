@@ -26,9 +26,15 @@
 
         <FrameLayout
             android:id="@+id/fl_container"
+            android:visibility="gone"
             android:background="@color/red"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_news"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 

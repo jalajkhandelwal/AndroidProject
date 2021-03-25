@@ -1,7 +1,6 @@
 package com.example.topnews.retrofit;
 
 import com.example.topnews.Model.Headlines;
-import com.example.topnews.Model.Source;
 import com.example.topnews.Model.SourceResponse;
 
 import retrofit2.Call;
@@ -12,7 +11,7 @@ public interface ApiInterface {
 
     @GET("top-headlines")
     Call<Headlines> getHeadlines(
-          @Query("country") String country,
+          @Query("sources") String sources,
           @Query("apiKey") String apiKey
     );
 
