@@ -10,10 +10,10 @@ import android.widget.Toast;
 import com.example.topnews.Model.SourceResponse;
 import com.example.topnews.Model.Sources;
 import com.example.topnews.R;
-import com.example.topnews.ViewModel.NewsViewModel;
+import com.example.topnews.adapters.CategoryRecyclerViewAdapter;
+import com.example.topnews.constants.AppConstants;
 import com.example.topnews.interfces.NewsIdListener;
 import com.example.topnews.interfces.RecyclerClickListener;
-import com.example.topnews.adapters.CategoryRecyclerViewAdapter;
 import com.example.topnews.retrofit.ApiClient;
 
 import java.util.ArrayList;
@@ -34,8 +34,6 @@ public class DrawerFragment extends Fragment implements RecyclerClickListener {
     private CategoryRecyclerViewAdapter madapter;
     private RecyclerView.LayoutManager layoutManager;
     private NewsIdListener mNewsIdListener;
-    private static final String Key = "key";
-    final String API_KEY = "14bfe05834a444b79739ac49197ae489";
     //private NewsViewModel newsViewModel;
 
     @Nullable
@@ -54,7 +52,7 @@ public class DrawerFragment extends Fragment implements RecyclerClickListener {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(madapter);
         madapter.notifyDataSetChanged();
-        getNewsSources(API_KEY);
+        getNewsSources(AppConstants.API_KEY);
     }
 
     public void setNewsIdListener(NewsIdListener mNewsIdListener){

@@ -1,52 +1,42 @@
 package com.example.topnews.ViewModel;
 
-import android.util.Log;
-import android.widget.Toast;
+import com.example.topnews.Model.Articles;
+import com.example.topnews.Model.Headlines;
+import com.example.topnews.constants.AppConstants;
+import com.example.topnews.retrofit.ApiClient;
+
+import java.util.List;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
-import com.example.topnews.Model.SourceResponse;
-import com.example.topnews.Model.Sources;
-import com.example.topnews.adapters.CategoryRecyclerViewAdapter;
-import com.example.topnews.retrofit.ApiClient;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class NewsViewModel extends ViewModel {
 
-    private CategoryRecyclerViewAdapter madapter;
-    private static final String Key = "key";
-    final String API_KEY = "14bfe05834a444b79739ac49197ae489";
-
-    private MutableLiveData<List<Sources>> msources;
+    private MutableLiveData<List<Articles>> mNewsLiveData;
 
     public NewsViewModel() {
-        msources = new MutableLiveData<>();
+        mNewsLiveData = new MutableLiveData<>();
     }
 
-    public MutableLiveData<List<Sources>> getNewsListObserver() {
-        return msources;
+    public MutableLiveData<List<Articles>> getNewsListObserver() {
+        return mNewsLiveData;
     }
 
-    public void NewsSources(String apiKey){
-        Call<SourceResponse> call = ApiClient.getInstance().getApi().getSource(apiKey);
-        call.enqueue(new Callback<SourceResponse>() {
+    public void getNews(String source){
+        Call<Headlines> call = ApiClient.getInstance().getApi().getHeadlines(source, AppConstants.API_KEY);
+        call.enqueue(new Callback<Headlines>() {
             @Override
-            public void onResponse(Call<SourceResponse> call, Response<SourceResponse> response) {
-                if (response.isSuccessful() && response.body().getSources() != null) {
-                    msources.postValue(response.body().getSources());
-                    madapter.notifyDataSetChanged();
+            public void onResponse(Call<Headlines> call, Response<Headlines> response) {
+                if (response.isSuccessful() && response.body()!= null &&response.body().getArticles() != null) {
+                    mNewsLiveData.postValue(response.body().getArticles());
                 }
             }
 
             @Override
-            public void onFailure(Call<SourceResponse> call, Throwable t) {
+            public void onFailure(Call<Headlines> call, Throwable t) {
                 //Toast.makeText(,t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });
