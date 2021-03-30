@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.example.topnews.Model.SourceResponse;
 import com.example.topnews.Model.Sources;
 import com.example.topnews.R;
+import com.example.topnews.ViewModel.NewsViewModel;
 import com.example.topnews.interfces.NewsIdListener;
 import com.example.topnews.interfces.RecyclerClickListener;
 import com.example.topnews.adapters.CategoryRecyclerViewAdapter;
@@ -35,6 +36,7 @@ public class DrawerFragment extends Fragment implements RecyclerClickListener {
     private NewsIdListener mNewsIdListener;
     private static final String Key = "key";
     final String API_KEY = "14bfe05834a444b79739ac49197ae489";
+    //private NewsViewModel newsViewModel;
 
     @Nullable
     @Override
@@ -52,7 +54,6 @@ public class DrawerFragment extends Fragment implements RecyclerClickListener {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(madapter);
         madapter.notifyDataSetChanged();
-        //String country = getCountry();
         getNewsSources(API_KEY);
     }
 
@@ -70,6 +71,9 @@ public class DrawerFragment extends Fragment implements RecyclerClickListener {
                     sources.addAll(response.body().getSources());
                     madapter.notifyDataSetChanged();
                     Log.e("TAG", "onResponse: " + sources.size());
+                    if(sources !=null && sources.size()>0){
+                        mNewsIdListener.onNewsIdReceived(sources.get(0).getId()); //calling listener
+                    }
                 }
             }
 
