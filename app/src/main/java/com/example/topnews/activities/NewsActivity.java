@@ -12,6 +12,7 @@ import com.example.topnews.adapters.CategoryRecyclerViewAdapter;
 import com.example.topnews.adapters.NewsRecyclerViewAdapter;
 import com.example.topnews.fragments.DrawerFragment;
 import com.example.topnews.interfces.NewsIdListener;
+import com.example.topnews.viewmodelfactories.NewsViewModelFactory;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -23,11 +24,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MainActivity extends AppCompatActivity implements NewsIdListener {
+public class NewsActivity extends AppCompatActivity implements NewsIdListener {
 
     private Toolbar toolbar;
     private NewsRecyclerViewAdapter mNewsRecyclerViewAdapter;
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements NewsIdListener {
     }
 
     private void initUI() {
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_news);
         mDrawerLayout = findViewById(R.id.drawerLayout);
         toolbar = findViewById(R.id.toolb);
         mNewsRecyclerView = findViewById(R.id.rv_news);
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements NewsIdListener {
     }
 
     private void initViewModel() {
-        mNewsViewModel = ViewModelProviders.of(this).get(NewsViewModel.class); //binding viewModel with activity and then passing it to recycle view
+        mNewsViewModel = new ViewModelProvider(this, new NewsViewModelFactory()).get(NewsViewModel.class);
     }
 
     private void setObservers() {
@@ -85,6 +86,14 @@ public class MainActivity extends AppCompatActivity implements NewsIdListener {
             articles.clear();
             articles.addAll(articles1);
             mNewsRecyclerViewAdapter.notifyDataSetChanged();
+        });
+
+        mNewsViewModel.getLoader().observe(this,isShowLoader ->{
+
+        });
+
+        mNewsViewModel.getErrorLiveData().observe(this,message ->{
+
         });
     }
 

@@ -6,18 +6,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.example.topnews.Model.SourceResponse;
 import com.example.topnews.Model.Sources;
 import com.example.topnews.R;
 import com.example.topnews.ViewModel.CategoryViewModel;
-import com.example.topnews.activities.MainActivity;
 import com.example.topnews.adapters.CategoryRecyclerViewAdapter;
 import com.example.topnews.constants.AppConstants;
 import com.example.topnews.interfces.NewsIdListener;
 import com.example.topnews.interfces.RecyclerClickListener;
-import com.example.topnews.retrofit.ApiClient;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -28,9 +24,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class DrawerFragment extends Fragment implements RecyclerClickListener {
 

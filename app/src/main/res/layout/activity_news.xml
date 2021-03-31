@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/drawerLayout"
     tools:openDrawer="start"
-    tools:context=".activities.MainActivity">
+    tools:context=".activities.NewsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
