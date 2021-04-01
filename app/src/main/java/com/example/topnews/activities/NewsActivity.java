@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.topnews.Model.Articles;
 import com.example.topnews.R;
 import com.example.topnews.ViewModel.NewsViewModel;
@@ -13,6 +14,8 @@ import com.example.topnews.adapters.NewsRecyclerViewAdapter;
 import com.example.topnews.fragments.DrawerFragment;
 import com.example.topnews.interfces.NewsIdListener;
 import com.example.topnews.viewmodelfactories.NewsViewModelFactory;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.dialog.MaterialDialogs;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -40,6 +43,7 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener {
     private RecyclerView mNewsRecyclerView;
     private DrawerFragment mDrawerFragment;
     private NewsViewModel mNewsViewModel;
+    //private LottieAnimationView lottieAnimationView;
 
 
     @Override

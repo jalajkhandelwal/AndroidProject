@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel;
 import com.example.topnews.Model.Articles;
 import com.example.topnews.Model.SourceResponse;
 import com.example.topnews.Model.Sources;
+import com.example.topnews.repositories.CategoryActivityRepository;
+import com.example.topnews.repositories.NewsActivityRepository;
 import com.example.topnews.retrofit.ApiClient;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -18,18 +20,26 @@ import retrofit2.Response;
 public class CategoryViewModel extends ViewModel {
 
     private MutableLiveData<List<Sources>> mCategoryLiveData;
+    private MutableLiveData<String> mErrorLiveData;
     private MutableLiveData<Boolean> progress;
     private MutableLiveData<Boolean> snackBar;
+    private CategoryActivityRepository mCatgRepository;
 
 
     public CategoryViewModel() {
         mCategoryLiveData = new MutableLiveData<>();
         progress = new MutableLiveData<>();
         snackBar = new MutableLiveData<>();
+        mErrorLiveData = new MutableLiveData<>();
+        mCatgRepository = CategoryActivityRepository.getInstance();
     }
 
     public MutableLiveData<List<Sources>> getCategoriesListObserver() {
         return mCategoryLiveData;
+    }
+
+    public MutableLiveData<String> getErrorLiveData() {
+        return mErrorLiveData;
     }
 
     public MutableLiveData<Boolean> getProgress() {
@@ -41,24 +51,8 @@ public class CategoryViewModel extends ViewModel {
     }
 
     public void getNewsSources(String apiKey){
-        progress.postValue(true);
-        Call<SourceResponse> call = ApiClient.getInstance().getApi().getSource(apiKey);
-        call.enqueue(new Callback<SourceResponse>() {
-            @Override
-            public void onResponse(Call<SourceResponse> call, Response<SourceResponse> response) {
-                progress.postValue(false);
-                if (response.isSuccessful() && response.body().getSources() != null) {
-                   mCategoryLiveData.postValue(response.body().getSources());
-                    //Log.e("TAG", "onResponse: " + mCategoryLiveData.size());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<SourceResponse> call, Throwable t) {
-                progress.postValue(false);
-                snackBar.postValue(true);
-            }
-        });
+        mCatgRepository.setLoader(progress);
+        mCatgRepository.getNewsSources(apiKey,mCategoryLiveData,mErrorLiveData);
     }
 
 }

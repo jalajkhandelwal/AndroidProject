@@ -7,13 +7,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.topnews.Model.Sources;
 import com.example.topnews.R;
 import com.example.topnews.ViewModel.CategoryViewModel;
+import com.example.topnews.activities.NewsActivity;
 import com.example.topnews.adapters.CategoryRecyclerViewAdapter;
 import com.example.topnews.constants.AppConstants;
 import com.example.topnews.interfces.NewsIdListener;
 import com.example.topnews.interfces.RecyclerClickListener;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -33,7 +36,9 @@ public class DrawerFragment extends Fragment implements RecyclerClickListener {
     private RecyclerView.LayoutManager layoutManager;
     private NewsIdListener mNewsIdListener;
     private CategoryViewModel mCategoryViewModel;
-    private ProgressDialog progressDialog;
+    private LottieAnimationView lottieAnimationView;
+    //private ProgressDialog progressDialog;
+    private MaterialAlertDialogBuilder materialAlertDialogBuilder;
 
     @Nullable
     @Override
@@ -58,8 +63,8 @@ public class DrawerFragment extends Fragment implements RecyclerClickListener {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(madapter);
         madapter.notifyDataSetChanged();
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.findViewById(R.id.progressBar);
+        lottieAnimationView = new LottieAnimationView(getActivity());
+        lottieAnimationView.findViewById(R.id.animationView);
     }
 
     private void initCatgViewModel() {
@@ -78,9 +83,9 @@ public class DrawerFragment extends Fragment implements RecyclerClickListener {
         });
         mCategoryViewModel.getProgress().observe(this, showProgress -> {
             if(showProgress){
-                progressDialog.show();
+                lottieAnimationView.setMinAndMaxFrame(30,50);
             }else{
-                progressDialog.dismiss();
+                lottieAnimationView.cancelAnimation();
             }
         });
         mCategoryViewModel.getSnackBar().observe(this, showSnackBar -> {
@@ -91,6 +96,15 @@ public class DrawerFragment extends Fragment implements RecyclerClickListener {
                 snackbar.dismiss();
             }
         });
+
+       mCategoryViewModel.getErrorLiveData().observe(this, showmessage -> {
+           if(showmessage !=null) {
+               materialAlertDialogBuilder = new MaterialAlertDialogBuilder(getActivity());
+               materialAlertDialogBuilder.setTitle("Error");
+               materialAlertDialogBuilder.setMessage("Cannot Load the News");
+               materialAlertDialogBuilder.show();
+           }
+       });
     }
 
     public void getNewsSources(String apiKey) {
