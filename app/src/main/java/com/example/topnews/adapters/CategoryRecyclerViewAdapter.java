@@ -6,9 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.topnews.Model.Sources;
+import com.example.newslibrary.Source;
+import com.example.newslibrary.Sources;
 import com.example.topnews.R;
 import com.example.topnews.interfces.RecyclerClickListener;
+import com.example.topnews.models.NewsSource;
+import com.example.topnews.models.NewsSources;
 
 import java.util.List;
 
@@ -16,11 +19,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRecyclerViewAdapter.ViewHolder> {
+    private Sources sources1 = new Sources();
     private Context context;
-    private List<Sources> sources;
+    private List<NewsSources> sources;
     private RecyclerClickListener mRecyclerClickListener;
 
-    public CategoryRecyclerViewAdapter(List<Sources> sources, RecyclerClickListener mListener) {
+    public CategoryRecyclerViewAdapter(List<NewsSources> sources, RecyclerClickListener mListener) {
         this.sources = sources;
         this.mRecyclerClickListener = mListener;
     }

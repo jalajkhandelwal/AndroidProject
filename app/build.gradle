@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
+    id 'realm-android'
 }
 
 android {
@@ -53,5 +55,7 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:core:3.2.1'
     implementation 'com.airbnb.android:lottie:3.6.1'
     implementation 'com.squareup.picasso:picasso:2.5.0'
+    implementation project(":NewsLibrary-debug")
+
 
 }

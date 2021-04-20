@@ -1,12 +1,21 @@
 package com.example.topnews.repositories;
-
-import com.example.topnews.Model.Articles;
-import com.example.topnews.Model.Headlines;
+import com.example.newslibrary.Articles;
+import com.example.newslibrary.CategoryRepository;
+import com.example.newslibrary.Headlines;
+import com.example.newslibrary.NewsRepository;
+import com.example.newslibrary.Sources;
+import com.example.newslibrary.listeners.APICallback;
+import com.example.newslibrary.retrofit.ApiClient;
+import com.example.topnews.RealmHelper;
+import com.example.topnews.activities.NewsActivity;
 import com.example.topnews.constants.AppConstants;
-import com.example.topnews.retrofit.ApiClient;
+import com.example.topnews.models.NewsArticles;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
-
 import androidx.lifecycle.MutableLiveData;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -17,12 +26,12 @@ public class NewsActivityRepository {
     private static NewsActivityRepository instance;
     private MutableLiveData<Boolean> loader;
 
-    public void setLoader(MutableLiveData<Boolean> loader) {
-        this.loader = loader;
+    private NewsActivityRepository(){
+        loader = new MutableLiveData<>();
     }
 
-    private NewsActivityRepository(){
-
+    public void setLoader(MutableLiveData<Boolean> loader) {
+        this.loader = loader;
     }
 
     public static NewsActivityRepository getInstance(){
@@ -33,29 +42,29 @@ public class NewsActivityRepository {
 
     }
 
-    public void getNewsFromId(String id, MutableLiveData<List<Articles>> mLiveData, MutableLiveData<String> errorLiveData){
+    public void newsFromId(String source, MutableLiveData<List<Articles>> mLiveData, MutableLiveData<String> errorLiveData){
         loader.postValue(true);
-        Call<Headlines> call = ApiClient.getInstance().getApi().getHeadlines(id, AppConstants.API_KEY);
-        call.enqueue(new Callback<Headlines>() {
+        NewsRepository.getInstance().newsFromId(source, new APICallback() {
             @Override
-            public void onResponse(Call<Headlines> call, Response<Headlines> response) {
+            public void onSuccess(Object response) {
                 loader.postValue(false);
-                if (response.isSuccessful() && response.body()!= null &&response.body().getArticles() != null) {
-                    mLiveData.postValue(response.body().getArticles());
+                List<Articles> mList = (List<Articles>) response;
+                Type token = new TypeToken<List<NewsArticles>>(){}.getType();
+                String temp = new Gson().toJson(mList);
+                List<NewsArticles> articles = new Gson().fromJson(temp,token);
+                for (NewsArticles art :
+                        articles) {
+                    art.setNewsId(source);
+                    RealmHelper.getInstance().saveNews(art);
                 }
+                mLiveData.postValue((List<Articles>) response);
             }
 
             @Override
-            public void onFailure(Call<Headlines> call, Throwable t) {
+            public void onFailure(String error) {
                 loader.postValue(false);
-                errorLiveData.postValue(t.getMessage());
+                errorLiveData.postValue(error);
             }
         });
     }
-
-
-
-
-
-
 }

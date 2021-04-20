@@ -4,18 +4,18 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
-import com.airbnb.lottie.LottieAnimationView;
-import com.example.topnews.Model.Articles;
 import com.example.topnews.R;
+import com.example.topnews.RealmHelper;
 import com.example.topnews.ViewModel.NewsViewModel;
 import com.example.topnews.adapters.CategoryRecyclerViewAdapter;
 import com.example.topnews.adapters.NewsRecyclerViewAdapter;
 import com.example.topnews.fragments.DrawerFragment;
 import com.example.topnews.interfces.NewsIdListener;
+import com.example.topnews.models.NewsArticles;
+import com.example.topnews.models.NewsSource;
 import com.example.topnews.viewmodelfactories.NewsViewModelFactory;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.dialog.MaterialDialogs;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -31,7 +31,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class NewsActivity extends AppCompatActivity implements NewsIdListener {
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+
+public class NewsActivity extends AppCompatActivity implements NewsIdListener{
 
     private Toolbar toolbar;
     private NewsRecyclerViewAdapter mNewsRecyclerViewAdapter;
@@ -39,12 +42,10 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener {
     private NavigationView mNavigationView;
     private DrawerLayout mDrawerLayout;
     private FrameLayout mFrameLayout;
-    private List<Articles> articles = new ArrayList<>();
+    private List<NewsArticles> articles = new ArrayList<>();
     private RecyclerView mNewsRecyclerView;
     private DrawerFragment mDrawerFragment;
     private NewsViewModel mNewsViewModel;
-    //private LottieAnimationView lottieAnimationView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,12 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener {
         initDrawer();
         initViewModel();
         setObservers();
+        realmConfig();
+    }
+
+    private void realmConfig() {
+        RealmConfiguration configuration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(configuration);
     }
 
     private void initUI() {
@@ -66,6 +73,8 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener {
         actionBar.setDisplayHomeAsUpEnabled(true);
         mNavigationView = findViewById(R.id.drawer_container);
         mFrameLayout = findViewById(R.id.fl_container);
+        Realm.init(this);
+
     }
 
     private void initRecyclerView() {
@@ -86,18 +95,24 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener {
 
     private void setObservers() {
         mNewsViewModel.getNewsListObserver().observe(this, articles1 -> {
-            Log.e("TAG", "onCreate: observer" );
+            Log.e("TAG", "onCreate: observer" + articles1.size());
+            List<NewsArticles> mList  = RealmHelper.getInstance().readNews();
+            Log.e("TAG", "setObservers: " + mList.size());
             articles.clear();
-            articles.addAll(articles1);
+            articles.addAll(mList);
+            Log.e("TAG", "setObservers: " + articles.size());
             mNewsRecyclerViewAdapter.notifyDataSetChanged();
         });
 
         mNewsViewModel.getLoader().observe(this,isShowLoader ->{
-
         });
 
         mNewsViewModel.getErrorLiveData().observe(this,message ->{
-
+            Toast.makeText(this, "Showing offline news", Toast.LENGTH_SHORT).show();
+            List<NewsArticles> mList  = RealmHelper.getInstance().readNews();
+            articles.clear();
+            articles.addAll(mList);
+            mNewsRecyclerViewAdapter.notifyDataSetChanged();
         });
     }
 
@@ -125,4 +140,10 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener {
     private void getNewsById(String id) {
         mNewsViewModel.getNews(id);
     }
+
+    /*@Override
+    public void onNewsClick(int position) {
+        Intent intent = new Intent(NewsActivity.this,NewsDetails.class);
+        startActivity(intent);
+    }*/
 }

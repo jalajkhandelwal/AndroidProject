@@ -3,12 +3,9 @@ package com.example.topnews.ViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.topnews.Model.Articles;
-import com.example.topnews.Model.SourceResponse;
-import com.example.topnews.Model.Sources;
+import com.example.newslibrary.Sources;
 import com.example.topnews.repositories.CategoryActivityRepository;
 import com.example.topnews.repositories.NewsActivityRepository;
-import com.example.topnews.retrofit.ApiClient;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
@@ -52,7 +49,7 @@ public class CategoryViewModel extends ViewModel {
 
     public void getNewsSources(String apiKey){
         mCatgRepository.setLoader(progress);
-        mCatgRepository.getNewsSources(apiKey,mCategoryLiveData,mErrorLiveData);
+        mCatgRepository.newsSources(mCategoryLiveData,mErrorLiveData);
     }
 
 }

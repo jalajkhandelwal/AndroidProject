@@ -1,6 +1,6 @@
 package com.example.topnews.ViewModel;
 
-import com.example.topnews.Model.Articles;
+import com.example.newslibrary.Articles;
 import com.example.topnews.repositories.NewsActivityRepository;
 
 import java.util.List;
@@ -8,8 +8,11 @@ import java.util.List;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class NewsViewModel extends ViewModel {
+import io.realm.Realm;
+import io.realm.RealmObject;
 
+public class NewsViewModel extends ViewModel {
+    private Articles articles;
     private MutableLiveData<List<Articles>> mNewsLiveData;
     private MutableLiveData<String> mErrorLiveData;
     private NewsActivityRepository mRepository;
@@ -37,7 +40,7 @@ public class NewsViewModel extends ViewModel {
 
     public void getNews(String source){
         mRepository.setLoader(mLoader);
-        mRepository.getNewsFromId(source,mNewsLiveData,mErrorLiveData);
+        mRepository.newsFromId(source,mNewsLiveData,mErrorLiveData);
     }
 
 }
