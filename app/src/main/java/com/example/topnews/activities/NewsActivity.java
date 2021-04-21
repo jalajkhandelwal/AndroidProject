@@ -14,7 +14,6 @@ import com.example.topnews.adapters.NewsRecyclerViewAdapter;
 import com.example.topnews.fragments.DrawerFragment;
 import com.example.topnews.interfces.NewsIdListener;
 import com.example.topnews.models.NewsArticles;
-import com.example.topnews.models.NewsSource;
 import com.example.topnews.viewmodelfactories.NewsViewModelFactory;
 import com.google.android.material.navigation.NavigationView;
 
@@ -46,6 +45,7 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener{
     private RecyclerView mNewsRecyclerView;
     private DrawerFragment mDrawerFragment;
     private NewsViewModel mNewsViewModel;
+    private String newsId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,9 +94,8 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener{
     }
 
     private void setObservers() {
-        mNewsViewModel.getNewsListObserver().observe(this, articles1 -> {
-            Log.e("TAG", "onCreate: observer" + articles1.size());
-            List<NewsArticles> mList  = RealmHelper.getInstance().readNews();
+        mNewsViewModel.getNewsListObserver().observe(this, newsId -> {
+            List<NewsArticles> mList  = RealmHelper.getInstance().readNews(newsId);
             Log.e("TAG", "setObservers: " + mList.size());
             articles.clear();
             articles.addAll(mList);
@@ -109,7 +108,7 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener{
 
         mNewsViewModel.getErrorLiveData().observe(this,message ->{
             Toast.makeText(this, "Showing offline news", Toast.LENGTH_SHORT).show();
-            List<NewsArticles> mList  = RealmHelper.getInstance().readNews();
+            List<NewsArticles> mList  = RealmHelper.getInstance().readNews(newsId);
             articles.clear();
             articles.addAll(mList);
             mNewsRecyclerViewAdapter.notifyDataSetChanged();
@@ -134,6 +133,7 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener{
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }
         Log.i("TAG", "onNewsIdReceived: " + id);
+        newsId = id;
         getNewsById(id);
     }
 

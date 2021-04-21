@@ -1,20 +1,16 @@
 package com.example.topnews;
 
-import com.example.newslibrary.Articles;
-import com.example.topnews.activities.NewsActivity;
+import android.util.Log;
+
 import com.example.topnews.interfces.NewsIdListener;
 import com.example.topnews.models.NewsArticles;
-import com.example.topnews.models.NewsSource;
 import com.example.topnews.models.NewsSources;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmList;
-import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 public class RealmHelper implements NewsIdListener{
@@ -38,6 +34,7 @@ public class RealmHelper implements NewsIdListener{
     }
 
     public void saveNews(NewsArticles articles){
+        Log.e("TAG", "saveNews: " + articles.getTitle() );
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -48,15 +45,16 @@ public class RealmHelper implements NewsIdListener{
                  max = max.intValue()+1;
              }
              articles.setId(max.intValue());
+                Log.e("TAG", "execute: " + articles.getId());
              realm.insertOrUpdate(articles);
             }
         });
     }
 
-    public List<NewsArticles> readNews(){
+    public List<NewsArticles> readNews(String newsId){
         realm.beginTransaction();
         List<NewsArticles> articles1 = new ArrayList<>();
-        RealmResults<NewsArticles> temp = realm.where(NewsArticles.class).findAll();
+        RealmResults<NewsArticles> temp = realm.where(NewsArticles.class).equalTo("newsId",newsId).findAll();
         articles1.addAll(temp);
         realm.commitTransaction();
         return articles1;
@@ -73,7 +71,7 @@ public class RealmHelper implements NewsIdListener{
     public List<NewsSources> categoryReadNews(){
         realm.beginTransaction();
         List<NewsSources> source1 = new ArrayList<>();
-        RealmResults<NewsSources> temp = realm.where(NewsSources.class).equalTo("id","id").findAll();
+        RealmResults<NewsSources> temp = realm.where(NewsSources.class).findAll();
         source1.addAll(temp);
         realm.commitTransaction();
         return source1;

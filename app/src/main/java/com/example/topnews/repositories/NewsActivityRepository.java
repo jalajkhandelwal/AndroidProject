@@ -42,7 +42,7 @@ public class NewsActivityRepository {
 
     }
 
-    public void newsFromId(String source, MutableLiveData<List<Articles>> mLiveData, MutableLiveData<String> errorLiveData){
+    public void newsFromId(String source, MutableLiveData<String> mLiveData, MutableLiveData<String> errorLiveData){
         loader.postValue(true);
         NewsRepository.getInstance().newsFromId(source, new APICallback() {
             @Override
@@ -57,7 +57,7 @@ public class NewsActivityRepository {
                     art.setNewsId(source);
                     RealmHelper.getInstance().saveNews(art);
                 }
-                mLiveData.postValue((List<Articles>) response);
+                mLiveData.postValue(source);
             }
 
             @Override

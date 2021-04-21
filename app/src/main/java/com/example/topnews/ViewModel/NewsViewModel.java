@@ -13,7 +13,7 @@ import io.realm.RealmObject;
 
 public class NewsViewModel extends ViewModel {
     private Articles articles;
-    private MutableLiveData<List<Articles>> mNewsLiveData;
+    private MutableLiveData<String> mNewsLiveData;
     private MutableLiveData<String> mErrorLiveData;
     private NewsActivityRepository mRepository;
     private MutableLiveData<Boolean> mLoader;
@@ -34,7 +34,7 @@ public class NewsViewModel extends ViewModel {
         mRepository = NewsActivityRepository.getInstance();
     }
 
-    public MutableLiveData<List<Articles>> getNewsListObserver() {
+    public MutableLiveData<String> getNewsListObserver() {
         return mNewsLiveData;
     }
 
