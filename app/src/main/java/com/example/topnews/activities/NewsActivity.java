@@ -1,13 +1,20 @@
 package com.example.topnews.activities;
 
+import android.app.LoaderManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.example.topnews.DatabaseHelper;
 import com.example.topnews.R;
-import com.example.topnews.RealmHelper;
 import com.example.topnews.ViewModel.NewsViewModel;
 import com.example.topnews.adapters.CategoryRecyclerViewAdapter;
 import com.example.topnews.adapters.NewsRecyclerViewAdapter;
@@ -21,19 +28,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationBuilderWithBuilderAccessor;
+import androidx.core.app.NotificationCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-
-public class NewsActivity extends AppCompatActivity implements NewsIdListener{
+public class NewsActivity extends AppCompatActivity implements NewsIdListener {
 
     private Toolbar toolbar;
     private NewsRecyclerViewAdapter mNewsRecyclerViewAdapter;
@@ -55,13 +62,8 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener{
         initDrawer();
         initViewModel();
         setObservers();
-        realmConfig();
     }
 
-    private void realmConfig() {
-        RealmConfiguration configuration = new RealmConfiguration.Builder().build();
-        Realm.setDefaultConfiguration(configuration);
-    }
 
     private void initUI() {
         setContentView(R.layout.activity_news);
@@ -73,8 +75,6 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener{
         actionBar.setDisplayHomeAsUpEnabled(true);
         mNavigationView = findViewById(R.id.drawer_container);
         mFrameLayout = findViewById(R.id.fl_container);
-        Realm.init(this);
-
     }
 
     private void initRecyclerView() {
@@ -95,12 +95,22 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener{
 
     private void setObservers() {
         mNewsViewModel.getNewsListObserver().observe(this, newsId -> {
-            List<NewsArticles> mList  = RealmHelper.getInstance().readNews(newsId);
-            Log.e("TAG", "setObservers: " + mList.size());
-            articles.clear();
-            articles.addAll(mList);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    List<NewsArticles> mList = DatabaseHelper.getInstance().readData(newsId);
+                    NewsActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            articles.clear();
+                            articles.addAll(mList);
+                            Log.e("TAG", "setObservers: " + articles.size());
+                            mNewsRecyclerViewAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+            }).start();
             Log.e("TAG", "setObservers: " + articles.size());
-            mNewsRecyclerViewAdapter.notifyDataSetChanged();
         });
 
         mNewsViewModel.getLoader().observe(this,isShowLoader ->{
@@ -108,10 +118,28 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener{
 
         mNewsViewModel.getErrorLiveData().observe(this,message ->{
             Toast.makeText(this, "Showing offline news", Toast.LENGTH_SHORT).show();
-            List<NewsArticles> mList  = RealmHelper.getInstance().readNews(newsId);
-            articles.clear();
-            articles.addAll(mList);
-            mNewsRecyclerViewAdapter.notifyDataSetChanged();
+           /* NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+            mBuilder.setSmallIcon(R.drawable.notification_icon);
+            mBuilder.setContentTitle("Showing Offline News");
+            mBuilder.setContentText("Your Internet is off");
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(1,mBuilder.build());*/
+            //List<NewsArticles> mList  = RealmHelper.getInstance().readNews(newsId)
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    List<NewsArticles> mList = DatabaseHelper.getInstance().readData(newsId);
+                    NewsActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.e("OFFLINE", "offline Set Observer:");
+                            articles.clear();
+                            articles.addAll(mList);
+                            mNewsRecyclerViewAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+            }).start();
         });
     }
 

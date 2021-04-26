@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.newslibrary.Sources;
+import com.example.topnews.models.NewsSources;
 import com.example.topnews.repositories.CategoryActivityRepository;
 import com.example.topnews.repositories.NewsActivityRepository;
 import com.google.android.material.snackbar.Snackbar;
@@ -16,7 +17,7 @@ import retrofit2.Response;
 
 public class CategoryViewModel extends ViewModel {
 
-    private MutableLiveData<List<Sources>> mCategoryLiveData;
+    private MutableLiveData<List<NewsSources>> mCategoryLiveData;
     private MutableLiveData<String> mErrorLiveData;
     private MutableLiveData<Boolean> progress;
     private MutableLiveData<Boolean> snackBar;
@@ -31,7 +32,7 @@ public class CategoryViewModel extends ViewModel {
         mCatgRepository = CategoryActivityRepository.getInstance();
     }
 
-    public MutableLiveData<List<Sources>> getCategoriesListObserver() {
+    public MutableLiveData<List<NewsSources>> getCategoriesListObserver() {
         return mCategoryLiveData;
     }
 

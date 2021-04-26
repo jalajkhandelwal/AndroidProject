@@ -8,9 +8,6 @@ import java.util.List;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import io.realm.Realm;
-import io.realm.RealmObject;
-
 public class NewsViewModel extends ViewModel {
     private Articles articles;
     private MutableLiveData<String> mNewsLiveData;

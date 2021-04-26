@@ -1,11 +1,9 @@
 package com.example.topnews.models;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+import android.graphics.Bitmap;
 
-public class NewsArticles extends RealmObject {
+public class NewsArticles {
 
-    @PrimaryKey
     private int id;
     private String newsId;
     private NewsSource source;
@@ -19,7 +17,9 @@ public class NewsArticles extends RealmObject {
     public NewsArticles() {
     }
 
-    public NewsArticles(NewsSource source, String author, String title, String description, String url, String urlToImage, String publishedAt) {
+    public NewsArticles(int id,String newsId,NewsSource source, String author, String title, String description, String url, String urlToImage, String publishedAt) {
+        this.id = id;
+        this.newsId = newsId;
         this.source = source;
         this.author = author;
         this.title = title;
@@ -100,4 +100,20 @@ public class NewsArticles extends RealmObject {
     public void setPublishedAt(String publishedAt) {
         this.publishedAt = publishedAt;
     }
+
+    @Override
+    public String toString() {
+        return "NewsArticles{" +
+                "id=" + id +
+                ", newsId='" + newsId + '\'' +
+                ", source=" + source +
+                ", author='" + author + '\'' +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", url='" + url + '\'' +
+                ", urlToImage='" + urlToImage + '\'' +
+                ", publishedAt='" + publishedAt + '\'' +
+                '}';
+    }
+
 }

@@ -2,6 +2,8 @@ package com.example.topnews.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +48,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         if(articles !=null && articles.size()>0) {
             final  NewsArticles a = articles.get(position);
             holder.tvTitle.setText(a.getTitle());
-            holder.tvSource.setText(a.getSource().getName());
+            holder.tvSource.setText(a.getNewsId());
             holder.tvDate.setText(a.getPublishedAt());
 
             String imageUrl = a.getUrlToImage();
@@ -58,7 +60,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                 public void onClick(View view) {
                     Intent intent = new Intent(context, NewsDetails.class);
                     intent.putExtra("title",a.getTitle());
-                    intent.putExtra("source",a.getSource().getName());
+                    intent.putExtra("source",a.getNewsId());
                     intent.putExtra("time",a.getPublishedAt());
                     intent.putExtra("desc",a.getDescription());
                     intent.putExtra("imageUrl",a.getUrlToImage());
@@ -85,6 +87,9 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvSource = itemView.findViewById(R.id.tvSource);
             tvDate = itemView.findViewById(R.id.tvDate);
+           /* BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeResource(Resources.getSystem(),R.id.imagView, options);*/
             imageView = itemView.findViewById(R.id.image);
             cardView = itemView.findViewById(R.id.cardView);
         }

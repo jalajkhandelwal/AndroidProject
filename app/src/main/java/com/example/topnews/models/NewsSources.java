@@ -1,12 +1,8 @@
 package com.example.topnews.models;
 
-import io.realm.RealmObject;
-import io.realm.RealmQuery;
-import io.realm.annotations.PrimaryKey;
+public class NewsSources {
 
-public class NewsSources extends RealmObject {
 
-    @PrimaryKey
     private String id;
     private String name;
     private String description;
