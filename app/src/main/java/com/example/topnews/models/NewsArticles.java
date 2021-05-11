@@ -1,11 +1,13 @@
 package com.example.topnews.models;
 
+import androidx.room.Entity;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class NewsArticles extends RealmObject {
 
-    @PrimaryKey
+   @PrimaryKey
     private int id;
     private String newsId;
     private NewsSource source;
