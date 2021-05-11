@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -118,13 +119,6 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener {
 
         mNewsViewModel.getErrorLiveData().observe(this,message ->{
             Toast.makeText(this, "Showing offline news", Toast.LENGTH_SHORT).show();
-           /* NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
-            mBuilder.setSmallIcon(R.drawable.notification_icon);
-            mBuilder.setContentTitle("Showing Offline News");
-            mBuilder.setContentText("Your Internet is off");
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.notify(1,mBuilder.build());*/
-            //List<NewsArticles> mList  = RealmHelper.getInstance().readNews(newsId)
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -168,10 +162,4 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener {
     private void getNewsById(String id) {
         mNewsViewModel.getNews(id);
     }
-
-    /*@Override
-    public void onNewsClick(int position) {
-        Intent intent = new Intent(NewsActivity.this,NewsDetails.class);
-        startActivity(intent);
-    }*/
 }

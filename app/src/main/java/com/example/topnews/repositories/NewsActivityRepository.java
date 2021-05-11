@@ -4,7 +4,10 @@ import android.content.Context;
 import com.example.newslibrary.Articles;
 import com.example.newslibrary.NewsRepository;
 import com.example.newslibrary.listeners.APICallback;
+import com.example.topnews.AsyncTaskRunner;
+import com.example.topnews.CoroutinesTask;
 import com.example.topnews.DatabaseHelper;
+import com.example.topnews.interfces.AsyncNewsListener;
 import com.example.topnews.models.NewsArticles;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -44,18 +47,21 @@ public class NewsActivityRepository {
                 Type token = new TypeToken<List<NewsArticles>>(){}.getType();
                 String temp = new Gson().toJson(mList);
                 List<NewsArticles> articles = new Gson().fromJson(temp,token);
-                new Thread(new Runnable() {
+               /* AsyncTaskRunner asyncTaskRunner = new AsyncTaskRunner(source, articles,new AsyncNewsListener() {
                     @Override
-                    public void run() {
-                        for (NewsArticles art :
-                                articles) {
-                            art.setNewsId(source);
-                            // RealmHelper.getInstance().saveNews(art);
-                            DatabaseHelper.getInstance().insertData(art);
-                        }
+                    public void onDbOperationComplete() {
                         mLiveData.postValue(source);
                     }
-                }).start();
+                });
+                asyncTaskRunner.execute();*/
+                CoroutinesTask coroutinesTask = new CoroutinesTask(source, articles, new AsyncNewsListener() {
+                    @Override
+                    public void onDbOperationComplete() {
+                        mLiveData.postValue(source);
+                    }
+                });
+                coroutinesTask.execute();
+
             }
 
             @Override

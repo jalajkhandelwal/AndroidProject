@@ -39,9 +39,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String qry = "create table newsArticles(id int, newsId text,source text, author text, title text, description text, url text, urlToImage text, publishedAt text)";
+        Log.e("newsSources", "onCreate: ");
+
+        String qry = "create table newsArticles(id int, newsId text,source text, author text, title text, description text, url text, urlToImage text, publishedAt text, image blob)";
         String qry2 = "create table newsSources(id text, name text, description text, url text, category text,language text, country text)";
-        Log.e("newsSources", "onCreate: "+qry2);
         sqLiteDatabase.execSQL(qry);
         sqLiteDatabase.execSQL(qry2);
     }
@@ -49,7 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS newsArticles");
+       sqLiteDatabase.execSQL("DROP TABLE IF EXISTS newsArticles");
         onCreate(sqLiteDatabase);
         sqLiteDatabase.execSQL("DROP TABlE IF EXISTS newsSources");
         onCreate(sqLiteDatabase);
@@ -99,7 +100,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return articles;
     }
 
-    /*public static byte[] getBytes(Bitmap bitmap){
+    public static byte[] getBytes(Bitmap bitmap){
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG,0,stream);
         return stream.toByteArray();
@@ -107,23 +108,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private Bitmap getImage(byte[] image) {
         return BitmapFactory.decodeByteArray(image,0,image.length);
-    }*/
+    }
 
-    public void insertSourcesData(NewsSources sources){
+     public void insertSourcesData(NewsSources sources){
         SQLiteDatabase sqLiteDatabase = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("id",sources.getId());
         values.put("name",sources.getName());
+        // Log.e("vlaues", "insertSourcesData: "+values);
         values.put("description",sources.getDescription());
         values.put("url",sources.getUrl());
         values.put("category",sources.getCategory());
-        values.put("languages",sources.getLanguage());
+        values.put("language",sources.getLanguage());
         values.put("country",sources.getCountry());
         Log.e("DBhelper", "insertSourcesData: ");
         sqLiteDatabase.insert("newsSources",null,values);
     }
 
-    public List<NewsSources> readSourcesData(){
+     public List<NewsSources> readSourcesData(){
         Log.e("TAG", "readData: in readData" );
         List<NewsSources> sources = new ArrayList<>();
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();

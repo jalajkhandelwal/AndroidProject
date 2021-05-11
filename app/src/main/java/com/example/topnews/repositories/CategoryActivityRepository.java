@@ -5,12 +5,16 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.newslibrary.CategoryRepository;
 import com.example.newslibrary.Sources;
 import com.example.newslibrary.listeners.APICallback;
+import com.example.topnews.DatabaseHelper;
 import com.example.topnews.constants.AppConstants;
+import com.example.topnews.models.NewsArticles;
+import com.example.topnews.models.NewsSource;
 import com.example.topnews.models.NewsSources;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -47,7 +51,18 @@ public class CategoryActivityRepository {
                 String temp = new Gson().toJson(mList);
                 List<NewsSources> sources = new Gson().fromJson(temp,token);
                // RealmHelper.getInstance().categorySaveNews(sources);
-                mLiveData.postValue(sources);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (NewsSources src :
+                                sources) {
+                            // RealmHelper.getInstance().saveNews(art);
+                            DatabaseHelper.getInstance().insertSourcesData(src);
+                        }
+                        mLiveData.postValue(sources);
+                    }
+                }).start();
+
             }
 
             @Override

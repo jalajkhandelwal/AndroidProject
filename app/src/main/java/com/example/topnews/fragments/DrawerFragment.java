@@ -49,6 +49,7 @@ public class DrawerFragment extends Fragment implements RecyclerClickListener {
     @Override
     public void onStart() {
         super.onStart();
+        DatabaseHelper.getInstance();
         initUI();
         initCatgViewModel();
         setCatgObserver();
@@ -74,12 +75,13 @@ public class DrawerFragment extends Fragment implements RecyclerClickListener {
     private void setCatgObserver() {
         mCategoryViewModel.getCategoriesListObserver().observe(this, sources1 -> {
             Log.e("Drawer", "onCreate: observer" );
-          //  List<NewsSources> mList  = RealmHelper.getInstance().categoryReadNews();
             List<NewsSources> mList = DatabaseHelper.getInstance().readSourcesData();
             sources.clear();
             sources.addAll(mList);
             madapter.notifyDataSetChanged();
+            Log.e("Drawer", "setCatgObserver: size" + sources.size() );
             if(sources !=null && sources.size()>0){
+                Log.e("Drawer", "setCatgObserver: " + sources.get(0).getId() );
                 mNewsIdListener.onNewsIdReceived(sources.get(0).getId());
             }
         });
@@ -90,11 +92,7 @@ public class DrawerFragment extends Fragment implements RecyclerClickListener {
             }else{
                 lottieAnimationView.cancelAnimation();
             }
-           // List<NewsSources> mList  = RealmHelper.getInstance().categoryReadNews();
-            List<NewsSources> mList = DatabaseHelper.getInstance().readSourcesData();
-            sources.clear();
-            sources.addAll(mList);
-            madapter.notifyDataSetChanged();
+
         });
 
         mCategoryViewModel.getSnackBar().observe(this, showSnackBar -> {
@@ -112,7 +110,6 @@ public class DrawerFragment extends Fragment implements RecyclerClickListener {
                materialAlertDialogBuilder.setTitle("Error");
                materialAlertDialogBuilder.setMessage("Cannot Load the News");
                materialAlertDialogBuilder.show();
-             //  List<NewsSources> mList  = RealmHelper.getInstance().categoryReadNews();
                List<NewsSources> mList = DatabaseHelper.getInstance().readSourcesData();
                sources.clear();
                sources.addAll(mList);
