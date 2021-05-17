@@ -68,6 +68,7 @@ public class DrawerFragment extends Fragment implements RecyclerClickListener {
 
     private void initCatgViewModel() {
         mCategoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
+        mCategoryViewModel.initRepo(getActivity().getApplication());
     }
 
     private void setCatgObserver() {

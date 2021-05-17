@@ -3,20 +3,17 @@ package com.example.topnews.database;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import androidx.annotation.NonNull;
-import androidx.room.Database;
-import androidx.room.DatabaseConfiguration;
-import androidx.room.InvalidationTracker;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
-import androidx.sqlite.db.SupportSQLiteDatabase;
-import androidx.sqlite.db.SupportSQLiteOpenHelper;
-
 import com.example.topnews.dao.NewsDao;
 import com.example.topnews.models.NewsArticles;
 import com.example.topnews.models.NewsSources;
 
 import org.jetbrains.annotations.NotNull;
+
+import androidx.annotation.NonNull;
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 @Database(entities = {NewsArticles.class, NewsSources.class},version = 1)
 public abstract class NewsDatabase extends RoomDatabase {
@@ -31,7 +28,6 @@ public abstract class NewsDatabase extends RoomDatabase {
             synchronized (NewsDatabase.class){
                 if(instance == null){
                     instance = Room.databaseBuilder(context,NewsDatabase.class,DATABASE_NAME)
-                            .addTypeConverter(NewsSources.class)
                             .addCallback(callback)
                             .build();
                 }

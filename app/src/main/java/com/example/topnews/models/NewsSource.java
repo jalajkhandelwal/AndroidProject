@@ -1,7 +1,5 @@
 package com.example.topnews.models;
 
-import java.util.List;
-
 public class NewsSource{
 
     private String id;
