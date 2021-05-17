@@ -1,12 +1,17 @@
 package com.example.topnews.models;
 
-import io.realm.RealmObject;
-import io.realm.RealmQuery;
-import io.realm.annotations.PrimaryKey;
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.ProvidedTypeConverter;
+import androidx.room.TypeConverter;
+import androidx.room.TypeConverters;
 
-public class NewsSources extends RealmObject {
+@Entity(tableName = "sources_table")
+public class NewsSources  {
 
-    @PrimaryKey
+    @PrimaryKey()
+    @NonNull
     private String id;
     private String name;
     private String description;
@@ -17,7 +22,7 @@ public class NewsSources extends RealmObject {
 
     public NewsSources() {
     }
-
+    
     public NewsSources(String id, String name, String description, String url, String category, String language, String country) {
         this.id = id;
         this.name = name;

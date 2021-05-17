@@ -7,7 +7,6 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.example.topnews.R;
-import com.example.topnews.RealmHelper;
 import com.example.topnews.ViewModel.NewsViewModel;
 import com.example.topnews.adapters.CategoryRecyclerViewAdapter;
 import com.example.topnews.adapters.NewsRecyclerViewAdapter;
@@ -26,12 +25,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
+
 
 public class NewsActivity extends AppCompatActivity implements NewsIdListener{
 
@@ -55,12 +54,6 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener{
         initDrawer();
         initViewModel();
         setObservers();
-        realmConfig();
-    }
-
-    private void realmConfig() {
-        RealmConfiguration configuration = new RealmConfiguration.Builder().build();
-        Realm.setDefaultConfiguration(configuration);
     }
 
     private void initUI() {
@@ -73,8 +66,6 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener{
         actionBar.setDisplayHomeAsUpEnabled(true);
         mNavigationView = findViewById(R.id.drawer_container);
         mFrameLayout = findViewById(R.id.fl_container);
-        Realm.init(this);
-
     }
 
     private void initRecyclerView() {
@@ -91,11 +82,12 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener{
 
     private void initViewModel() {
         mNewsViewModel = new ViewModelProvider(this, new NewsViewModelFactory()).get(NewsViewModel.class);
+        mNewsViewModel.initRepo(getApplication());
     }
 
     private void setObservers() {
         mNewsViewModel.getNewsListObserver().observe(this, newsId -> {
-            List<NewsArticles> mList  = RealmHelper.getInstance().readNews(newsId);
+            List<NewsArticles> mList  = new ArrayList<>();
             Log.e("TAG", "setObservers: " + mList.size());
             articles.clear();
             articles.addAll(mList);
@@ -103,15 +95,19 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener{
             mNewsRecyclerViewAdapter.notifyDataSetChanged();
         });
 
+        mNewsViewModel.getAllArticles().observe(this, new Observer<List<NewsArticles>>() {
+            @Override
+            public void onChanged(List<NewsArticles> articles) {
+                mNewsRecyclerViewAdapter.getAllArticles(articles);
+                mNewsRecyclerView.setAdapter(mNewsRecyclerViewAdapter);
+            }
+        });
+
         mNewsViewModel.getLoader().observe(this,isShowLoader ->{
         });
 
         mNewsViewModel.getErrorLiveData().observe(this,message ->{
             Toast.makeText(this, "Showing offline news", Toast.LENGTH_SHORT).show();
-            List<NewsArticles> mList  = RealmHelper.getInstance().readNews(newsId);
-            articles.clear();
-            articles.addAll(mList);
-            mNewsRecyclerViewAdapter.notifyDataSetChanged();
         });
     }
 

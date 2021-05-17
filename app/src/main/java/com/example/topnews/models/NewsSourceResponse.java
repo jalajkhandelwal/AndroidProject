@@ -3,10 +3,7 @@ package com.example.topnews.models;
 import com.example.newslibrary.Sources;
 import java.util.List;
 
-import io.realm.RealmModel;
-import io.realm.RealmObject;
-
-public class NewsSourceResponse implements RealmModel {
+public class NewsSourceResponse {
 
     private String status;
     private List<NewsSources> sources;

@@ -1,15 +1,20 @@
 package com.example.topnews.models;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Embedded;
 import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
-public class NewsArticles extends RealmObject {
+@Entity(tableName = "articles_table")
+public class NewsArticles  {
 
-   @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
     private String newsId;
+    @TypeConverters(SourceConverter.class)
     private NewsSource source;
     private String author;
     private String title;

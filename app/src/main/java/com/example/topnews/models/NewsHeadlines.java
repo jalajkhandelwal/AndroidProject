@@ -3,10 +3,8 @@ package com.example.topnews.models;
 import com.example.newslibrary.Articles;
 import java.util.List;
 
-import io.realm.RealmModel;
-import io.realm.RealmObject;
 
-public class NewsHeadlines implements RealmModel {
+public class NewsHeadlines {
 
     private String status;
     private String totalResults;

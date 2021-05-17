@@ -2,8 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
-    id 'kotlin-kapt'
-    id 'realm-android'
+
 }
 
 android {
@@ -34,6 +33,8 @@ android {
 
 dependencies {
 
+    def room_version ="2.3.0"
+
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
@@ -57,4 +58,7 @@ dependencies {
     implementation 'com.airbnb.android:lottie:3.6.1'
     implementation 'com.squareup.picasso:picasso:2.5.0'
     implementation project(":NewsLibrary-debug")
+
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
 }

@@ -50,6 +50,10 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
         }
     }
 
+    public void getAllSources(List<NewsSources> sources){
+        this.sources = sources;
+    }
+
     @Override
     public int getItemCount() {
         return sources.size();

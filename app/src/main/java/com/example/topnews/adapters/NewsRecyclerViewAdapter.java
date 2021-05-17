@@ -69,6 +69,11 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         }
     }
 
+    public void getAllArticles(List<NewsArticles> articles){
+        this.articles = articles;
+    }
+
+
     @Override
     public int getItemCount() {
         return articles.size();

@@ -8,13 +8,11 @@ import android.view.ViewGroup;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.topnews.R;
-import com.example.topnews.RealmHelper;
 import com.example.topnews.ViewModel.CategoryViewModel;
 import com.example.topnews.adapters.CategoryRecyclerViewAdapter;
 import com.example.topnews.constants.AppConstants;
 import com.example.topnews.interfces.NewsIdListener;
 import com.example.topnews.interfces.RecyclerClickListener;
-import com.example.topnews.models.NewsArticles;
 import com.example.topnews.models.NewsSources;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
@@ -24,6 +22,7 @@ import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -74,7 +73,7 @@ public class DrawerFragment extends Fragment implements RecyclerClickListener {
     private void setCatgObserver() {
         mCategoryViewModel.getCategoriesListObserver().observe(this, sources1 -> {
             Log.e("Drawer", "onCreate: observer" );
-            List<NewsSources> mList  = RealmHelper.getInstance().categoryReadNews();
+            List<NewsSources> mList  = new ArrayList<>();
             sources.clear();
             sources.addAll(mList);
             madapter.notifyDataSetChanged();
@@ -83,15 +82,24 @@ public class DrawerFragment extends Fragment implements RecyclerClickListener {
             }
         });
 
+        mCategoryViewModel.getAllSources().observe(this, new Observer<List<NewsSources>>() {
+            @Override
+            public void onChanged(List<NewsSources> sources) {
+                madapter.getAllSources(sources);
+                recyclerView.setAdapter(madapter);
+            }
+        });
+
+
         mCategoryViewModel.getProgress().observe(this, showProgress -> {
             if(showProgress){
                 lottieAnimationView.setMinAndMaxFrame(30,50);
             }else{
                 lottieAnimationView.cancelAnimation();
             }
-            List<NewsSources> mList  = RealmHelper.getInstance().categoryReadNews();
+            /*List<NewsSources> mList  = RealmHelper.getInstance().categoryReadNews();
             sources.clear();
-            sources.addAll(mList);
+            sources.addAll(mList);*/
         });
 
         mCategoryViewModel.getSnackBar().observe(this, showSnackBar -> {
@@ -109,13 +117,13 @@ public class DrawerFragment extends Fragment implements RecyclerClickListener {
                materialAlertDialogBuilder.setTitle("Error");
                materialAlertDialogBuilder.setMessage("Cannot Load the News");
                materialAlertDialogBuilder.show();
-               List<NewsSources> mList  = RealmHelper.getInstance().categoryReadNews();
+             /*  List<NewsSources> mList  = RealmHelper.getInstance().categoryReadNews();
                sources.clear();
                sources.addAll(mList);
                madapter.notifyDataSetChanged();
                if(sources !=null && sources.size()>0){
                    mNewsIdListener.onNewsIdReceived(sources.get(0).getId());
-               }
+               }*/
            }
        });
     }
