@@ -2,8 +2,10 @@ package com.example.topnews.repositories;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.topnews.dao.NewsDao;
 import com.example.topnews.database.NewsDatabase;
@@ -15,17 +17,22 @@ import java.util.List;
 public class DbRepo {
 
     private NewsDatabase newsDatabase;
-    private LiveData<List<NewsArticles>> getAllArticles;
+    private LiveData<List<NewsArticles>> getAllArticles = new MutableLiveData<>();
     private LiveData<List<NewsSources>> getAllSources;
 
     public DbRepo(Application application){
         newsDatabase = newsDatabase.getInstance(application);
-        getAllArticles = newsDatabase.newsDao().getAllArticles();
         getAllSources = newsDatabase.newsDao().getAllSources();
+    }
+
+    public void getArticlesByNewsId(String newsId){
+        getAllArticles = newsDatabase.newsDao().getAllArticles(newsId);
+        Log.e("dbRepo", "getArticlesByNewsId: "+getAllArticles.getValue().size());
     }
 
     public void insert(List<NewsArticles> articles){
         new InsertAstncTask(newsDatabase).execute(articles);
+        Log.e("Dbrepo", "insert: ");
     }
 
     public LiveData<List<NewsArticles>> getAllArticles(){

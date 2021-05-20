@@ -17,8 +17,8 @@ public interface NewsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(List<NewsArticles> articles);
 
-    @Query("SELECT * FROM articles_table")
-    LiveData<List<NewsArticles>> getAllArticles();
+    @Query("SELECT * FROM articles_table where newsId= :news_Id")
+    LiveData<List<NewsArticles>> getAllArticles(String news_Id);
 
     @Query("DELETE FROM articles_table")
     void deleteAllArticles();

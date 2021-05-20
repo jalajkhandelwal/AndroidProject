@@ -13,6 +13,7 @@ import com.example.topnews.adapters.NewsRecyclerViewAdapter;
 import com.example.topnews.fragments.DrawerFragment;
 import com.example.topnews.interfces.NewsIdListener;
 import com.example.topnews.models.NewsArticles;
+import com.example.topnews.repositories.DbRepo;
 import com.example.topnews.viewmodelfactories.NewsViewModelFactory;
 import com.google.android.material.navigation.NavigationView;
 
@@ -45,6 +46,7 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener{
     private DrawerFragment mDrawerFragment;
     private NewsViewModel mNewsViewModel;
     private String newsId;
+    private DbRepo dbRepo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +94,9 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener{
             articles.clear();
             articles.addAll(mList);
             Log.e("TAG", "setObservers: " + articles.size());
+            dbRepo = new DbRepo(getApplication());
+            dbRepo.getArticlesByNewsId(newsId);
+            Log.e("db", "setObservers: ");
             mNewsRecyclerViewAdapter.notifyDataSetChanged();
         });
 

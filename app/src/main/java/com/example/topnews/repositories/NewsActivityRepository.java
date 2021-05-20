@@ -1,4 +1,7 @@
 package com.example.topnews.repositories;
+import android.app.Application;
+import android.util.Log;
+
 import com.example.newslibrary.Articles;
 import com.example.newslibrary.NewsRepository;
 import com.example.newslibrary.listeners.APICallback;
@@ -14,6 +17,8 @@ public class NewsActivityRepository {
 
     private static NewsActivityRepository instance;
     private MutableLiveData<Boolean> loader;
+    private DbRepo dbRepo;
+    private Application application;
 
     private NewsActivityRepository(){
         loader = new MutableLiveData<>();
@@ -45,7 +50,10 @@ public class NewsActivityRepository {
                         articles) {
                     art.setNewsId(source);
                 }
+                dbRepo = new DbRepo(application);
+                dbRepo.insert(articles);
                 mLiveData.postValue(source);
+                Log.e("newsFromId", "onSuccess: ");
             }
 
             @Override

@@ -14,6 +14,7 @@ import com.example.topnews.constants.AppConstants;
 import com.example.topnews.interfces.NewsIdListener;
 import com.example.topnews.interfces.RecyclerClickListener;
 import com.example.topnews.models.NewsSources;
+import com.example.topnews.viewmodelfactories.SourcesViewModelFactory;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -23,6 +24,7 @@ import java.util.List;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -67,7 +69,7 @@ public class DrawerFragment extends Fragment implements RecyclerClickListener {
     }
 
     private void initCatgViewModel() {
-        mCategoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
+        mCategoryViewModel = new ViewModelProvider(this,new SourcesViewModelFactory()).get(CategoryViewModel.class);
         mCategoryViewModel.initRepo(getActivity().getApplication());
     }
 

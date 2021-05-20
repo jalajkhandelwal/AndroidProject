@@ -1,11 +1,15 @@
 package com.example.topnews.repositories;
 
+import android.app.Application;
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.newslibrary.CategoryRepository;
 import com.example.newslibrary.Sources;
 import com.example.newslibrary.listeners.APICallback;
 import com.example.topnews.constants.AppConstants;
+import com.example.topnews.models.NewsArticles;
 import com.example.topnews.models.NewsSources;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -18,8 +22,8 @@ public class CategoryActivityRepository {
 
     private static CategoryActivityRepository instance;
     private MutableLiveData<Boolean> loader;
-
-    //private CategoryRepository categoryRepository;
+    private DbRepo dbRepo;
+    private Application application;
 
     private CategoryActivityRepository(){
          loader = new MutableLiveData<>();
@@ -46,6 +50,10 @@ public class CategoryActivityRepository {
                 Type token = new TypeToken<List<NewsSources>>(){}.getType();
                 String temp = new Gson().toJson(mList);
                 List<NewsSources> sources = new Gson().fromJson(temp,token);
+
+                dbRepo = new DbRepo(application);
+                dbRepo.insertSources(sources);
+                Log.e("newSources", "onSuccess: ");
                 mLiveData.postValue((List<Sources>) response);
             }
 
