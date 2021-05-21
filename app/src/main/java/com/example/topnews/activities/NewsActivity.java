@@ -94,15 +94,15 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener{
             articles.clear();
             articles.addAll(mList);
             Log.e("TAG", "setObservers: " + articles.size());
-            dbRepo = new DbRepo(getApplication());
-            dbRepo.getArticlesByNewsId(newsId);
+            mNewsViewModel.getArticlesById(newsId);
             Log.e("db", "setObservers: ");
             mNewsRecyclerViewAdapter.notifyDataSetChanged();
         });
 
-        mNewsViewModel.getAllArticles().observe(this, new Observer<List<NewsArticles>>() {
+        mNewsViewModel.getAllArticlesLiveData().observe(this, new Observer<List<NewsArticles>>() {
             @Override
             public void onChanged(List<NewsArticles> articles) {
+                Log.e("TAG", "onChanged: " + articles.size());
                 mNewsRecyclerViewAdapter.getAllArticles(articles);
                 mNewsRecyclerView.setAdapter(mNewsRecyclerViewAdapter);
             }

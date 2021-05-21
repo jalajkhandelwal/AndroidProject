@@ -4,9 +4,6 @@ import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
 import com.example.topnews.dao.NewsDao;
 import com.example.topnews.database.NewsDatabase;
 import com.example.topnews.models.NewsArticles;
@@ -14,10 +11,13 @@ import com.example.topnews.models.NewsSources;
 
 import java.util.List;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 public class DbRepo {
 
     private NewsDatabase newsDatabase;
-    private LiveData<List<NewsArticles>> getAllArticles = new MutableLiveData<>();
+    private MutableLiveData<List<NewsArticles>> getAllArticles = new MutableLiveData<>();
     private LiveData<List<NewsSources>> getAllSources;
 
     public DbRepo(Application application){
@@ -25,17 +25,21 @@ public class DbRepo {
         getAllSources = newsDatabase.newsDao().getAllSources();
     }
 
-    public void getArticlesByNewsId(String newsId){
-        getAllArticles = newsDatabase.newsDao().getAllArticles(newsId);
-        Log.e("dbRepo", "getArticlesByNewsId: "+getAllArticles.getValue().size());
+    public void getArticlesByNewsId(String newsId, MutableLiveData<List<NewsArticles>> mLiveData){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mLiveData.postValue(newsDatabase.newsDao().getAllArticles(newsId));
+            }
+        }).start();
     }
 
     public void insert(List<NewsArticles> articles){
         new InsertAstncTask(newsDatabase).execute(articles);
-        Log.e("Dbrepo", "insert: ");
+        Log.e("Dbrepo", "insert: " + articles.size());
     }
 
-    public LiveData<List<NewsArticles>> getAllArticles(){
+    public MutableLiveData<List<NewsArticles>> getAllArticles(){
         return getAllArticles;
     }
 

@@ -1,15 +1,15 @@
 package com.example.topnews.dao;
 
+import com.example.topnews.models.NewsArticles;
+import com.example.topnews.models.NewsSources;
+
+import java.util.List;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-
-import com.example.topnews.models.NewsArticles;
-import com.example.topnews.models.NewsSources;
-
-import java.util.List;
 
 @Dao
 public interface NewsDao {
@@ -18,7 +18,7 @@ public interface NewsDao {
     void insert(List<NewsArticles> articles);
 
     @Query("SELECT * FROM articles_table where newsId= :news_Id")
-    LiveData<List<NewsArticles>> getAllArticles(String news_Id);
+    List<NewsArticles> getAllArticles(String news_Id);
 
     @Query("DELETE FROM articles_table")
     void deleteAllArticles();
