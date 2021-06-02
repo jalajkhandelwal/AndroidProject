@@ -14,9 +14,11 @@ import com.example.topnews.models.NewsSources;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
-
 
 public class CategoryActivityRepository {
 
@@ -40,9 +42,36 @@ public class CategoryActivityRepository {
         return instance;
     }
 
-    public void newsSources(MutableLiveData<List<Sources>> mLiveData, MutableLiveData<String> errorLiveData){
+    public void newsSources(MutableLiveData<List<Sources>> mLiveData, MutableLiveData<String> errorLiveData) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         loader.postValue(true);
-        CategoryRepository.getInstance().getNewsSources(AppConstants.API_KEY, new APICallback() {
+        CategoryRepository categoryRepository = new CategoryRepository();
+        Class cls = categoryRepository.getClass();
+        Constructor constructor = cls.getConstructor();
+        Object myObj = constructor.newInstance();
+        Method category = myObj.getClass().getMethod("getNewsSources");
+        category.invoke(AppConstants.API_KEY, new APICallback() {
+            @Override
+            public void onSuccess(Object o) {
+                loader.postValue(false);
+                List<NewsSources> mList = (List<NewsSources>) o;
+                Type token = new TypeToken<List<NewsSources>>() {
+                }.getType();
+                String temp = new Gson().toJson(mList);
+                List<NewsSources> sources = new Gson().fromJson(temp, token);
+
+                dbRepo = new DbRepo(application);
+                dbRepo.insertSources(sources);
+                Log.e("newSources", "onSuccess: ");
+                mLiveData.postValue((List<Sources>) o);
+            }
+
+            @Override
+            public void onFailure(String s) {
+                loader.postValue(false);
+                errorLiveData.postValue(s);
+            }
+        });
+      /*  CategoryRepository.getInstance().getNewsSources(AppConstants.API_KEY, new APICallback() {
             @Override
             public void onSuccess(Object response) {
                 loader.postValue(false);
@@ -62,7 +91,7 @@ public class CategoryActivityRepository {
                 loader.postValue(false);
                 errorLiveData.postValue(error);
             }
-        });
+        });*/
     }
 }
 

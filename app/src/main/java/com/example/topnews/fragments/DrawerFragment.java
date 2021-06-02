@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.topnews.R;
@@ -18,6 +20,7 @@ import com.example.topnews.viewmodelfactories.SourcesViewModelFactory;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +56,17 @@ public class DrawerFragment extends Fragment implements RecyclerClickListener {
         initUI();
         initCatgViewModel();
         setCatgObserver();
-        getNewsSources(AppConstants.API_KEY);
+        try {
+            getNewsSources(AppConstants.API_KEY);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (java.lang.InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initUI() {
@@ -131,7 +144,7 @@ public class DrawerFragment extends Fragment implements RecyclerClickListener {
        });
     }
 
-    public void getNewsSources(String apiKey) {
+    public void getNewsSources(String apiKey) throws NoSuchMethodException, java.lang.InstantiationException, IllegalAccessException, InvocationTargetException {
         mCategoryViewModel.getNewsSources(apiKey);
     }
 

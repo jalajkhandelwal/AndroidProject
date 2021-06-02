@@ -13,6 +13,7 @@ import com.example.topnews.repositories.DbRepo;
 import com.example.topnews.repositories.NewsActivityRepository;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -66,7 +67,7 @@ public class CategoryViewModel extends ViewModel {
         return snackBar;
     }
 
-    public void getNewsSources(String apiKey){
+    public void getNewsSources(String apiKey) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         mCatgRepository.setLoader(progress);
         mCatgRepository.newsSources(mCategoryLiveData,mErrorLiveData);
     }

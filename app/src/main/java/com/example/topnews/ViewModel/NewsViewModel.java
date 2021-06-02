@@ -6,6 +6,7 @@ import com.example.topnews.models.NewsArticles;
 import com.example.topnews.repositories.DbRepo;
 import com.example.topnews.repositories.NewsActivityRepository;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import androidx.lifecycle.MutableLiveData;
@@ -56,7 +57,7 @@ public class NewsViewModel extends ViewModel {
         return mNewsLiveData;
     }
 
-    public void getNews(String source){
+    public void getNews(String source) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         mRepository.setLoader(mLoader);
         mRepository.newsFromId(source,mNewsLiveData,mErrorLiveData);
     }

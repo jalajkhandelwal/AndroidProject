@@ -3,6 +3,8 @@ package com.example.topnews.activities;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -17,6 +19,7 @@ import com.example.topnews.repositories.DbRepo;
 import com.example.topnews.viewmodelfactories.NewsViewModelFactory;
 import com.google.android.material.navigation.NavigationView;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,6 +92,8 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener{
 
     private void setObservers() {
         mNewsViewModel.getNewsListObserver().observe(this, newsId -> {
+            Animation animation2 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
+            mNewsRecyclerView.setAnimation(animation2);
             List<NewsArticles> mList  = new ArrayList<>();
             Log.e("TAG", "setObservers: " + mList.size());
             articles.clear();
@@ -118,10 +123,14 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener{
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
+        mNavigationView.setAnimation(animation);
         Log.e("TAG", "onOptionsItemSelected: ");
         if (mDrawerLayout.isDrawerOpen(mNavigationView)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
+            Animation animation2 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_out);
+            mNewsRecyclerView.setAnimation(animation2);
             mDrawerLayout.openDrawer(GravityCompat.START);
         }
         return true;
@@ -135,10 +144,21 @@ public class NewsActivity extends AppCompatActivity implements NewsIdListener{
         }
         Log.i("TAG", "onNewsIdReceived: " + id);
         newsId = id;
-        getNewsById(id);
+        try {
+            getNewsById(id);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
     }
 
-    private void getNewsById(String id) {
+    private void getNewsById(String id) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         mNewsViewModel.getNews(id);
     }
 
